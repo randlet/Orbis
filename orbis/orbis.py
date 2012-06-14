@@ -15,4 +15,7 @@ class MainFrame(gui.VOrbisFrame):
         super(MainFrame,self).__init__(*args,**kwargs)
         
         self.SetTitle(settings.TITLE)
+        
+        
+
     

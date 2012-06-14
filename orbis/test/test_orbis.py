@@ -25,6 +25,9 @@ class Test(unittest.TestCase):
     def test_title(self):
         title = self.frame.GetTitle()        
         self.assertEqual(title,orbis.settings.TITLE)
+    #---------------------------------------------------------------------------
+    def test_frozen(self):
+        self.assertFalse(orbis.settings.frozen)
         
 if __name__ == "__main__":
     unittest.main()            
