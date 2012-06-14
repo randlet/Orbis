@@ -1,7 +1,8 @@
+import numpy
 import orbis
 import orbis.gui
+import orbis.settings
 import os
-import numpy
 import unittest
 import wx
 TEST_PRECISION = 4
@@ -14,13 +15,16 @@ class Test(unittest.TestCase):
         os.chdir(os.path.join(os.path.dirname(__file__),".."))
         self.app = wx.App(redirect=False)
         self.frame = orbis.MainFrame(parent=None)
+        self.frame.Show()
+        
     #---------------------------------------------------------------------------
     def tearDown(self):
         self.frame.Destroy()
         
     #---------------------------------------------------------------------------
-    def test1(self):
-        """"""
-        self.assertEqual(1,1)
+    def test_title(self):
+        title = self.frame.GetTitle()        
+        self.assertEqual(title,orbis.settings.TITLE)
+        
 if __name__ == "__main__":
     unittest.main()            
