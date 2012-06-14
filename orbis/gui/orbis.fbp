@@ -2057,7 +2057,7 @@
                                             <property name="center_pane">0</property>
                                             <property name="class"></property>
                                             <property name="close_button">1</property>
-                                            <property name="construction"></property>
+                                            <property name="construction">self.sketch_pad =  plots.SketchPad(self.plots_container)</property>
                                             <property name="context_help"></property>
                                             <property name="context_menu">1</property>
                                             <property name="declaration"></property>
@@ -2072,7 +2072,7 @@
                                             <property name="gripper">0</property>
                                             <property name="hidden">0</property>
                                             <property name="id">wxID_ANY</property>
-                                            <property name="include"></property>
+                                            <property name="include">import plots</property>
                                             <property name="layer"></property>
                                             <property name="max_size"></property>
                                             <property name="maximize_button">0</property>
@@ -2322,7 +2322,7 @@
                                                                 <property name="center_pane">0</property>
                                                                 <property name="class"></property>
                                                                 <property name="close_button">1</property>
-                                                                <property name="construction"></property>
+                                                                <property name="construction">self.eld_plot = plots.EnergyLevelDiagram(self.eld_plot_container)</property>
                                                                 <property name="context_help"></property>
                                                                 <property name="context_menu">1</property>
                                                                 <property name="declaration"></property>
@@ -2498,7 +2498,7 @@
                                                                 <property name="center_pane">0</property>
                                                                 <property name="class"></property>
                                                                 <property name="close_button">1</property>
-                                                                <property name="construction"></property>
+                                                                <property name="construction">self.orbital_plot = plots.OrbitalDiagram(self.orbital_plot_container)</property>
                                                                 <property name="context_help"></property>
                                                                 <property name="context_menu">1</property>
                                                                 <property name="declaration"></property>

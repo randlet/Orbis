@@ -9,6 +9,7 @@
 
 import wx
 import wx.xrc
+import plots
 import wx.grid
 
 ###########################################################################
@@ -175,7 +176,7 @@ class VOrbisFrame ( wx.Frame ):
 		self.plots_container = wx.Panel( self.main_splitter, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		plot_container_sizer = wx.BoxSizer( wx.VERTICAL )
 		
-		
+		self.sketch_pad =  plots.SketchPad(self.plots_container)
 		plot_container_sizer.Add( self.sketch_pad, 1, wx.ALL|wx.EXPAND, 5 )
 		
 		self.results_plot_splitter = wx.SplitterWindow( self.plots_container, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.SP_3D )
@@ -184,7 +185,7 @@ class VOrbisFrame ( wx.Frame ):
 		self.eld_plot_container = wx.Panel( self.results_plot_splitter, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		eld_plot_sizer = wx.BoxSizer( wx.VERTICAL )
 		
-		
+		self.eld_plot = plots.EnergyLevelDiagram(self.eld_plot_container)
 		eld_plot_sizer.Add( self.eld_plot, 1, wx.ALL|wx.EXPAND, 5 )
 		
 		self.eld_plot_container.SetSizer( eld_plot_sizer )
@@ -193,7 +194,7 @@ class VOrbisFrame ( wx.Frame ):
 		self.orbital_plot_container = wx.Panel( self.results_plot_splitter, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		orbital_plot_sizer = wx.BoxSizer( wx.VERTICAL )
 		
-		
+		self.orbital_plot = plots.OrbitalDiagram(self.orbital_plot_container)
 		orbital_plot_sizer.Add( self.orbital_plot, 1, wx.ALL|wx.EXPAND, 5 )
 		
 		self.orbital_plot_container.SetSizer( orbital_plot_sizer )
