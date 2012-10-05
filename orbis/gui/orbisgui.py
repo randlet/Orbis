@@ -137,20 +137,20 @@ class VOrbisFrame ( wx.Frame ):
 		sketch_pad_control_sub_sizer.Add( self.zoom_label, 0, wx.ALIGN_CENTER_VERTICAL|wx.TOP|wx.BOTTOM|wx.LEFT, 5 )
 		
 		self.zoom_in = wx.Button( self.controls, wx.ID_ANY, u"+", wx.DefaultPosition, wx.DefaultSize, wx.BU_EXACTFIT )
-		sketch_pad_control_sub_sizer.Add( self.zoom_in, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		sketch_pad_control_sub_sizer.Add( self.zoom_in, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.EXPAND|wx.TOP|wx.BOTTOM|wx.LEFT, 5 )
 		
 		self.zoom_out = wx.Button( self.controls, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, wx.BU_EXACTFIT )
-		sketch_pad_control_sub_sizer.Add( self.zoom_out, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		sketch_pad_control_sub_sizer.Add( self.zoom_out, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.EXPAND|wx.ALL, 5 )
 		
 		self.rotate_label = wx.StaticText( self.controls, wx.ID_ANY, u"Rotate:", wx.DefaultPosition, wx.DefaultSize, 0 )
 		self.rotate_label.Wrap( -1 )
 		sketch_pad_control_sub_sizer.Add( self.rotate_label, 0, wx.TOP|wx.BOTTOM|wx.LEFT, 5 )
 		
 		self.rotate_cw = wx.Button( self.controls, wx.ID_ANY, u"+", wx.DefaultPosition, wx.DefaultSize, wx.BU_EXACTFIT )
-		sketch_pad_control_sub_sizer.Add( self.rotate_cw, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		sketch_pad_control_sub_sizer.Add( self.rotate_cw, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.EXPAND|wx.TOP|wx.BOTTOM|wx.LEFT, 5 )
 		
 		self.rotate_ccw = wx.Button( self.controls, wx.ID_ANY, u"-", wx.DefaultPosition, wx.DefaultSize, wx.BU_EXACTFIT )
-		sketch_pad_control_sub_sizer.Add( self.rotate_ccw, 0, wx.ALL|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		sketch_pad_control_sub_sizer.Add( self.rotate_ccw, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.EXPAND|wx.ALL, 5 )
 		
 		
 		sketch_pad_control_sub_sizer.AddSpacer( ( 0, 0), 1, wx.EXPAND, 5 )
@@ -158,10 +158,10 @@ class VOrbisFrame ( wx.Frame ):
 		self.redraw = wx.Button( self.controls, wx.ID_ANY, u"Redraw", wx.DefaultPosition, wx.DefaultSize, wx.BU_EXACTFIT )
 		self.redraw.SetToolTipString( u"Normalize the molecules shape" )
 		
-		sketch_pad_control_sub_sizer.Add( self.redraw, 0, wx.TOP|wx.BOTTOM|wx.LEFT|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		sketch_pad_control_sub_sizer.Add( self.redraw, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.EXPAND|wx.TOP|wx.BOTTOM|wx.LEFT, 5 )
 		
 		self.clear = wx.Button( self.controls, wx.ID_ANY, u"Clear", wx.DefaultPosition, wx.DefaultSize, wx.BU_EXACTFIT )
-		sketch_pad_control_sub_sizer.Add( self.clear, 0, wx.TOP|wx.BOTTOM|wx.RIGHT|wx.ALIGN_CENTER_HORIZONTAL, 5 )
+		sketch_pad_control_sub_sizer.Add( self.clear, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.EXPAND|wx.ALL, 5 )
 		
 		sketch_pad_control_sizer.Add( sketch_pad_control_sub_sizer, 1, wx.EXPAND, 5 )
 		
@@ -173,6 +173,9 @@ class VOrbisFrame ( wx.Frame ):
 		main_sizer.Add( self.controls, 0, wx.EXPAND, 5 )
 		
 		self.main_splitter = wx.SplitterWindow( self, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.SP_3D )
+		self.main_splitter.SetSashGravity( 0.5 )
+		self.main_splitter.Bind( wx.EVT_IDLE, self.main_splitterOnIdle )
+		
 		self.plots_container = wx.Panel( self.main_splitter, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		plot_container_sizer = wx.BoxSizer( wx.VERTICAL )
 		
@@ -418,7 +421,7 @@ class VOrbisFrame ( wx.Frame ):
 		self.grids_container.SetSizer( grids_sizer )
 		self.grids_container.Layout()
 		grids_sizer.Fit( self.grids_container )
-		self.main_splitter.SplitVertically( self.plots_container, self.grids_container, -1 )
+		self.main_splitter.SplitVertically( self.plots_container, self.grids_container, 0 )
 		main_sizer.Add( self.main_splitter, 1, wx.EXPAND, 5 )
 		
 		self.SetSizer( main_sizer )
@@ -511,6 +514,10 @@ class VOrbisFrame ( wx.Frame ):
 	
 	def on_clear( self, event ):
 		event.Skip()
+	
+	def main_splitterOnIdle( self, event ):
+		self.main_splitter.SetSashPosition( 0 )
+		self.main_splitter.Unbind( wx.EVT_IDLE )
 	
 	def results_plot_splitterOnIdle( self, event ):
 		self.results_plot_splitter.SetSashPosition( 0 )
