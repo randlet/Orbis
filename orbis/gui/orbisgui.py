@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*- 
 
 ###########################################################################
-## Python code generated with wxFormBuilder (version Jun 30 2011)
+## Python code generated with wxFormBuilder (version Feb  9 2012)
 ## http://www.wxformbuilder.org/
 ##
 ## PLEASE DO "NOT" EDIT THIS FILE!
@@ -9,6 +9,7 @@
 
 import wx
 import wx.xrc
+import sketchpad
 import plots
 import wx.grid
 
@@ -117,6 +118,7 @@ class VOrbisFrame ( wx.Frame ):
 		
 		basis_sizer.Add( self.basis_size, 0, wx.TOP|wx.BOTTOM|wx.RIGHT, 5 )
 		
+		
 		huckel_control_sizer.Add( basis_sizer, 1, wx.EXPAND, 5 )
 		
 		atom_typeChoices = []
@@ -125,6 +127,7 @@ class VOrbisFrame ( wx.Frame ):
 		self.atom_type.SetToolTipString( u"Choose an atom type" )
 		
 		huckel_control_sizer.Add( self.atom_type, 0, wx.ALL|wx.EXPAND, 5 )
+		
 		
 		controls_sizer.Add( huckel_control_sizer, 0, wx.EXPAND|wx.ALL, 5 )
 		
@@ -163,9 +166,12 @@ class VOrbisFrame ( wx.Frame ):
 		self.clear = wx.Button( self.controls, wx.ID_ANY, u"Clear", wx.DefaultPosition, wx.DefaultSize, wx.BU_EXACTFIT )
 		sketch_pad_control_sub_sizer.Add( self.clear, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.EXPAND|wx.ALL, 5 )
 		
+		
 		sketch_pad_control_sizer.Add( sketch_pad_control_sub_sizer, 1, wx.EXPAND, 5 )
 		
+		
 		controls_sizer.Add( sketch_pad_control_sizer, 0, wx.EXPAND|wx.ALL, 5 )
+		
 		
 		self.controls.SetSizer( controls_sizer )
 		self.controls.Layout()
@@ -179,7 +185,7 @@ class VOrbisFrame ( wx.Frame ):
 		self.plots_container = wx.Panel( self.main_splitter, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.TAB_TRAVERSAL )
 		plot_container_sizer = wx.BoxSizer( wx.VERTICAL )
 		
-		self.sketch_pad =  plots.SketchPad(self.plots_container)
+		self.sketch_pad =  sketchpad.SketchPad(self.plots_container)
 		plot_container_sizer.Add( self.sketch_pad, 1, wx.ALL|wx.EXPAND, 5 )
 		
 		self.results_plot_splitter = wx.SplitterWindow( self.plots_container, wx.ID_ANY, wx.DefaultPosition, wx.DefaultSize, wx.SP_3D )
@@ -191,6 +197,7 @@ class VOrbisFrame ( wx.Frame ):
 		self.eld_plot = plots.EnergyLevelDiagram(self.eld_plot_container)
 		eld_plot_sizer.Add( self.eld_plot, 1, wx.ALL|wx.EXPAND, 5 )
 		
+		
 		self.eld_plot_container.SetSizer( eld_plot_sizer )
 		self.eld_plot_container.Layout()
 		eld_plot_sizer.Fit( self.eld_plot_container )
@@ -200,11 +207,13 @@ class VOrbisFrame ( wx.Frame ):
 		self.orbital_plot = plots.OrbitalDiagram(self.orbital_plot_container)
 		orbital_plot_sizer.Add( self.orbital_plot, 1, wx.ALL|wx.EXPAND, 5 )
 		
+		
 		self.orbital_plot_container.SetSizer( orbital_plot_sizer )
 		self.orbital_plot_container.Layout()
 		orbital_plot_sizer.Fit( self.orbital_plot_container )
 		self.results_plot_splitter.SplitVertically( self.eld_plot_container, self.orbital_plot_container, 0 )
 		plot_container_sizer.Add( self.results_plot_splitter, 1, wx.EXPAND, 5 )
+		
 		
 		self.plots_container.SetSizer( plot_container_sizer )
 		self.plots_container.Layout()
@@ -241,6 +250,7 @@ class VOrbisFrame ( wx.Frame ):
 		# Cell Defaults
 		self.huckel_grid.SetDefaultCellAlignment( wx.ALIGN_LEFT, wx.ALIGN_TOP )
 		huckel_sizer.Add( self.huckel_grid, 1, wx.EXPAND, 5 )
+		
 		
 		self.huckel_container.SetSizer( huckel_sizer )
 		self.huckel_container.Layout()
@@ -279,6 +289,7 @@ class VOrbisFrame ( wx.Frame ):
 		self.eigen_grid.SetDefaultCellAlignment( wx.ALIGN_LEFT, wx.ALIGN_TOP )
 		eigen_sizer.Add( self.eigen_grid, 1, wx.EXPAND, 5 )
 		
+		
 		self.eigen_container.SetSizer( eigen_sizer )
 		self.eigen_container.Layout()
 		eigen_sizer.Fit( self.eigen_container )
@@ -311,6 +322,7 @@ class VOrbisFrame ( wx.Frame ):
 		# Cell Defaults
 		self.bond_order_grid.SetDefaultCellAlignment( wx.ALIGN_LEFT, wx.ALIGN_TOP )
 		bond_order_sizer.Add( self.bond_order_grid, 1, wx.EXPAND, 5 )
+		
 		
 		self.bond_order_containers.SetSizer( bond_order_sizer )
 		self.bond_order_containers.Layout()
@@ -345,6 +357,7 @@ class VOrbisFrame ( wx.Frame ):
 		self.charge_grid.SetDefaultCellAlignment( wx.ALIGN_LEFT, wx.ALIGN_TOP )
 		charge_sizer.Add( self.charge_grid, 0, wx.ALL, 5 )
 		
+		
 		self.charge_container.SetSizer( charge_sizer )
 		self.charge_container.Layout()
 		charge_sizer.Fit( self.charge_container )
@@ -377,6 +390,7 @@ class VOrbisFrame ( wx.Frame ):
 		# Cell Defaults
 		self.aa_polar_grid.SetDefaultCellAlignment( wx.ALIGN_LEFT, wx.ALIGN_TOP )
 		aa_polar_sizer.Add( self.aa_polar_grid, 0, wx.ALL, 5 )
+		
 		
 		self.aa_polar_container.SetSizer( aa_polar_sizer )
 		self.aa_polar_container.Layout()
@@ -411,6 +425,7 @@ class VOrbisFrame ( wx.Frame ):
 		self.ab_polar_grid.SetDefaultCellAlignment( wx.ALIGN_LEFT, wx.ALIGN_TOP )
 		ab_polar_sizer.Add( self.ab_polar_grid, 0, wx.ALL, 5 )
 		
+		
 		self.ab_polar_container.SetSizer( ab_polar_sizer )
 		self.ab_polar_container.Layout()
 		ab_polar_sizer.Fit( self.ab_polar_container )
@@ -418,11 +433,13 @@ class VOrbisFrame ( wx.Frame ):
 		
 		grids_sizer.Add( self.results_notebook, 1, wx.EXPAND, 5 )
 		
+		
 		self.grids_container.SetSizer( grids_sizer )
 		self.grids_container.Layout()
 		grids_sizer.Fit( self.grids_container )
 		self.main_splitter.SplitVertically( self.plots_container, self.grids_container, 0 )
 		main_sizer.Add( self.main_splitter, 1, wx.EXPAND, 5 )
+		
 		
 		self.SetSizer( main_sizer )
 		self.Layout()

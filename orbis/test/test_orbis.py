@@ -22,8 +22,7 @@ class Test(unittest.TestCase):
         
     #---------------------------------------------------------------------------
     def tearDown(self):
-        self.frame.Destroy()
-        
+        self.frame.Destroy()        
     #---------------------------------------------------------------------------
     def test_title(self):        
         title = self.frame.GetTitle()        
@@ -67,7 +66,6 @@ class Test(unittest.TestCase):
     #---------------------------------------------------------------------------
     def test_data_set_correctly(self):
         self.frame.set_huckel_data(self.data)
-        print self.data,self.frame.get_huckel_data()
         self.assertTrue((self.data==self.frame.get_huckel_data()).all())
         
 if __name__ == "__main__":
