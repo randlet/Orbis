@@ -10,8 +10,6 @@ from plots import Plot
 class SketchPad(Plot):
     """sketch pad for drawing molecules"""
 
-    PICK_TOLERANCE = 5
-    
     #----------------------------------------------------------------------
     def __init__(self,*args,**kwargs):
         super(SketchPad,self).__init__(*args,**kwargs)
@@ -21,6 +19,7 @@ class SketchPad(Plot):
         self.drag_line = None
         self.up_atom = None
         self.down_atom = None
+        self.selected_bond = None
     
         self.refresh_required = False
     #---------------------------------------------------------------------------
@@ -38,7 +37,7 @@ class SketchPad(Plot):
     #---------------------------------------------------------------------------
     def on_button_down(self,event):
         super(SketchPad,self).on_button_down(event)
-        self.down_atom = self.atom_at_event_point(event)
+        self.down_atom = self.atom_at_event_point(event)        
     #---------------------------------------------------------------------------
     def atom_at_event_point(self,event):
         for patch in self.axes.patches:
@@ -58,21 +57,30 @@ class SketchPad(Plot):
             self.add_atom()
         elif self.delete_atom_requested(event):
             self.delete_atom(self.up_atom)
-        elif self.new_bond_requested() and not self.bond_exists(self.up_atom,self.down_atom):
+        elif self.new_bond_requested():
             self.add_bond()
+        elif self.delete_bond_requested(event):
+            self.delete_bond(self.selected_bond)
             
     #---------------------------------------------------------------------------
     def new_atom_requested(self):
         return self.was_click() and not self.was_pick()              
     #---------------------------------------------------------------------------
     def delete_atom_requested(self,event):
-        return event.key == "control" and self.was_pick() and self.up_atom
-        
+        return event.key == "control" and self.was_pick() and self.up_atom    
     #---------------------------------------------------------------------------
     def new_bond_requested(self):        
-        start_and_finish_atoms = None not in (self.up_atom, self.down_atom)
+        """check if user requested a new bond"""
+        if None in (self.up_atom, self.down_atom):
+            return False
+        
         unique_atoms = self.up_atom is not self.down_atom
-        return start_and_finish_atoms and unique_atoms
+        is_new = not self.bond_exists(self.up_atom,self.down_atom)
+        return unique_atoms and is_new
+    #---------------------------------------------------------------------------
+    def delete_bond_requested(self,event):
+        """check if user wants to delete a bond"""
+        return event.key == "control" and self.selected_bond 
     #---------------------------------------------------------------------------
     def bond_exists(self,atom_1,atom_2):        
         bond_coords = [sorted(bond.get_xydata().tolist()) for bond in self.axes.lines]
@@ -90,7 +98,7 @@ class SketchPad(Plot):
         circ = matplotlib.patches.CirclePolygon(
             coords,
             settings.sketch["atom_radius"],
-            picker=settings.sketch["pick_tolerance"],
+            picker=settings.sketch["atom_pick_tolerance"],
             resolution=40,
             color = self.get_atom_color(),
         )
@@ -101,7 +109,13 @@ class SketchPad(Plot):
         """add a new bond between down_atom and up_atom"""
         x1,y1 = self.down_atom.xy
         x2,y2 = self.up_atom.xy
-        self.axes.plot([x1,x2],[y1,y2],color=self.get_bond_color(),linewidth=settings.sketch["bond_line_width"])
+        self.axes.plot(
+            [x1,x2],
+            [y1,y2],
+            color=self.get_bond_color(),
+            linewidth=settings.sketch["bond_line_width"],
+            picker=settings.sketch["bond_pick_tolerance"],
+        )
         self.refresh_required = True
     #---------------------------------------------------------------------------
     def get_atom_color(self):
@@ -114,6 +128,13 @@ class SketchPad(Plot):
     #---------------------------------------------------------------------------
     def on_pick(self,event):
         super(SketchPad,self).on_pick(event)
+
+        self.selected_bond = None
+
+        bond_picked = event.artist in self.axes.lines
+        if bond_picked:
+            self.selected_bond = event.artist
+            
     #---------------------------------------------------------------------------
     def on_motion(self,event):
         """draw line if user creating bond"""
@@ -126,13 +147,18 @@ class SketchPad(Plot):
             ys = [self.down_atom.xy[1],event.ydata]
 
             if self.drag_line is None:                
-                self.drag_line = self.axes.plot(xs,ys,color=settings.sketch["drag_color"],linestyle=settings.sketch["drag_line_style"])[0]
+                self.drag_line = self.axes.plot(
+                    xs,ys,
+                    color=settings.sketch["drag_color"],
+                    linestyle=settings.sketch["drag_line_style"],                    
+                )[0]
             else:
                 self.drag_line.set_data(xs,ys)
                 
             self.figure.canvas.draw()
     #---------------------------------------------------------------------------
     def delete_drag_line(self):
+        """clear the temp line from drawing bonds"""
         self.axes.lines.remove(self.drag_line)
         del self.drag_line
         self.drag_line = None
@@ -159,6 +185,7 @@ class SketchPad(Plot):
         """remove bond from sketchpad"""
         self.axes.lines.remove(bond)
         del bond
+        self.selected_bond = None        
         self.refresh_required = True
         
 if __name__ == "__main__":

@@ -16,9 +16,10 @@ elif FROZEN in ('dll', 'console_exe', 'windows_exe',1): # py2exe/pyinstaller:
 
 
 sketch = {
-    "pick_tolerance":5,
+    "bond_pick_tolerance":5,
     "bond_line_width":2,
     "atom_radius":0.02,
+    "atom_pick_tolerance":5,
     "drag_color":"g",
     "drag_line_style":"--",    
 }
