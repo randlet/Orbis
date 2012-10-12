@@ -51,6 +51,7 @@ class Plot(wx.Panel):
             ("pick_event",self.on_pick),
             ("motion_notify_event",self.on_motion),
             ("scroll_event",self.on_scroll),
+            ("idle_event",self.on_idle),
         )
             
         for event, handler in events:            
@@ -82,7 +83,9 @@ class Plot(wx.Panel):
     #---------------------------------------------------------------------------
     def on_scroll(self,event):
         """default scroll event"""        
-        
+    #---------------------------------------------------------------------------
+    def on_idle(self,event):
+        """default idle event"""        
     #---------------------------------------------------------------------------
     def was_click(self):
         """check whether mouse down/up are coincident and therfore qualify as a click"""

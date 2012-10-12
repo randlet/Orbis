@@ -21,13 +21,19 @@ class SketchPad(Plot):
         self.drag_line = None
         self.up_atom = None
         self.down_atom = None
-        
+    
+        self.refresh_required = False
     #---------------------------------------------------------------------------
     def setup_axes(self):
         """initial config for self.axes"""
         self.axes = self.figure.add_subplot(1,1,1)
         self.axes.set_aspect("equal")
         self.axes.set_autoscale_on(False)
+    #---------------------------------------------------------------------------
+    def on_idle(self,event):
+        if self.refresh_required:
+            self.figure.canvas.draw()
+            self.refresh_required = False
         
     #---------------------------------------------------------------------------
     def on_button_down(self,event):
@@ -50,12 +56,18 @@ class SketchPad(Plot):
         
         if self.new_atom_requested():
             self.add_atom()
+        elif self.delete_atom_requested(event):
+            self.delete_atom(self.up_atom)
         elif self.new_bond_requested() and not self.bond_exists(self.up_atom,self.down_atom):
             self.add_bond()
             
     #---------------------------------------------------------------------------
     def new_atom_requested(self):
         return self.was_click() and not self.was_pick()              
+    #---------------------------------------------------------------------------
+    def delete_atom_requested(self,event):
+        return event.key == "control" and self.was_pick()
+        
     #---------------------------------------------------------------------------
     def new_bond_requested(self):        
         start_and_finish_atoms = None not in (self.up_atom, self.down_atom)
@@ -83,14 +95,14 @@ class SketchPad(Plot):
             color = self.get_atom_color(),
         )
         self.axes.add_patch(circ)
-        self.figure.canvas.draw()
+        self.refresh_required = True
     #---------------------------------------------------------------------------
     def add_bond(self):
         """add a new bond between down_atom and up_atom"""
         x1,y1 = self.down_atom.xy
         x2,y2 = self.up_atom.xy
         self.axes.plot([x1,x2],[y1,y2],color=self.get_bond_color(),linewidth=settings.sketch["bond_line_width"])
-        self.figure.canvas.draw()
+        self.refresh_required = True
     #---------------------------------------------------------------------------
     def get_atom_color(self):
         """return color of atom to draw"""
@@ -124,6 +136,30 @@ class SketchPad(Plot):
         self.axes.lines.remove(self.drag_line)
         del self.drag_line
         self.drag_line = None
+        self.refresh_required = True
+    #---------------------------------------------------------------------------
+    def delete_atom(self,atom):
+        """remove atom and all associated bonds from sketchpad"""
+        self.clear_bonds_for_atom(atom)
+        self.axes.patches.remove(atom)
+        del atom
+        self.refresh_required = True
+    #---------------------------------------------------------------------------
+    def clear_bonds_for_atom(self,atom):
+        """delete all lines attached to input atom"""
+        position = atom.xy
+        to_delete = [bond for bond in self.axes.lines if position in bond.get_xydata()]
+        
+        for bond in to_delete:
+            self.delete_bond(bond)
+            
+        self.refresh_required = True
+    #---------------------------------------------------------------------------
+    def delete_bond(self,bond):
+        """remove bond from sketchpad"""
+        self.axes.lines.remove(bond)
+        del bond
+        self.refresh_required = True
         
 if __name__ == "__main__":
     app = wx.App()
