@@ -13,3 +13,12 @@ if not FROZEN: # not frozen: in regular python interpreter
 elif FROZEN in ('dll', 'console_exe', 'windows_exe',1): # py2exe/pyinstaller:
     FROZEN = True
     ROOT = os.path.dirname(sys.executable)
+
+
+sketch = {
+    "pick_tolerance":5,
+    "bond_line_width":2,
+    "atom_radius":0.02,
+    "drag_color":"g",
+    "drag_line_style":"--",    
+}
