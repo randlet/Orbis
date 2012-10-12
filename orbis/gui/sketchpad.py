@@ -66,7 +66,7 @@ class SketchPad(Plot):
         return self.was_click() and not self.was_pick()              
     #---------------------------------------------------------------------------
     def delete_atom_requested(self,event):
-        return event.key == "control" and self.was_pick()
+        return event.key == "control" and self.was_pick() and self.up_atom
         
     #---------------------------------------------------------------------------
     def new_bond_requested(self):        
