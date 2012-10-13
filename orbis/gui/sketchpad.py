@@ -12,6 +12,8 @@ class SketchPad(Plot):
 
     #----------------------------------------------------------------------
     def __init__(self,*args,**kwargs):
+        self.refresh_required = False
+        
         super(SketchPad,self).__init__(*args,**kwargs)
 
         self.setup_axes()
@@ -20,13 +22,14 @@ class SketchPad(Plot):
         self.up_atom = None
         self.down_atom = None
         self.selected_bond = None
-    
-        self.refresh_required = False
+        self.rotation = 0.
     #---------------------------------------------------------------------------
     def setup_axes(self):
         """initial config for self.axes"""
         self.axes = self.figure.add_subplot(1,1,1)
         self.axes.set_aspect("equal")
+        self.axes.set_xlim(-1,1)
+        self.axes.set_ylim(-1,1)        
         self.axes.set_autoscale_on(False)
     #---------------------------------------------------------------------------
     def on_idle(self,event):
@@ -141,8 +144,9 @@ class SketchPad(Plot):
         super(SketchPad,self).on_motion(event)
 
         multiple_atoms = len(self.axes.patches) > 1
-        
-        if event.button is not None and self.down_atom is not None and multiple_atoms:
+
+        if event.button == 1 and self.down_atom is not None and multiple_atoms:
+
             xs = [self.down_atom.xy[0],event.xdata]
             ys = [self.down_atom.xy[1],event.ydata]
 
@@ -156,6 +160,44 @@ class SketchPad(Plot):
                 self.drag_line.set_data(xs,ys)
                 
             self.figure.canvas.draw()
+    #---------------------------------------------------------------------------
+    def on_scroll(self,event):
+        """rotate/zoom on scroll"""
+
+        if event.key == "control":
+            self.zoom(event.step)
+        else:
+            self.rotate(event.step)
+    #---------------------------------------------------------------------------
+    def zoom(self, factor):
+        """zoom in (factor > 0) or out (factor < 0)"""
+    #---------------------------------------------------------------------------
+    def rotate(self,factor):
+        """rotate counter clockwise (factor > 0) or clockwise (factor < 0)"""
+            
+        dt = numpy.deg2rad(factor)
+        rot = numpy.mat([[numpy.cos(dt),-numpy.sin(dt)],[numpy.sin(dt),numpy.cos(dt)]])
+        xo,yo = self.get_centroid()
+        
+        def rotate_point(x,y):
+            new_pos = rot*(numpy.array((x-xo,y-yo)).reshape((2,1)))
+            return xo+new_pos[0,0],yo+new_pos[1,0]
+        
+        for atom in self.axes.patches:
+            atom.xy = rotate_point(*atom.xy)
+            
+        for bond in self.axes.lines:
+            start,finish = [rotate_point(*p) for p in bond.get_xydata()]
+            xs, ys = zip(*[start,finish])
+            bond.set_xdata(xs)
+            bond.set_ydata(ys)
+                                     
+        self.refresh_required = True
+    #---------------------------------------------------------------------------
+    def get_centroid(self):
+        """return average position of all atoms on sketchpad"""
+        xs,ys = zip(*[atom.xy for atom in self.axes.patches])
+        return numpy.average(xs),numpy.average(ys)
     #---------------------------------------------------------------------------
     def delete_drag_line(self):
         """clear the temp line from drawing bonds"""
