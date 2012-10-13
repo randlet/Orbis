@@ -163,14 +163,21 @@ class SketchPad(Plot):
     #---------------------------------------------------------------------------
     def on_scroll(self,event):
         """rotate/zoom on scroll"""
-
+        atoms_exist = len(self.axes.patches) > 0
+        
+        if not atoms_exist:
+            return 
+        
         if event.key == "control":
             self.zoom(event.step)
-        else:
+        else:            
             self.rotate(event.step)
     #---------------------------------------------------------------------------
     def zoom(self, factor):
         """zoom in (factor > 0) or out (factor < 0)"""
+        self.axes.set_xlim(numpy.array(self.axes.get_xlim())*(1+factor/100.))
+        self.axes.set_ylim(numpy.array(self.axes.get_ylim())*(1+factor/100.))        
+        self.refresh_required = True
     #---------------------------------------------------------------------------
     def rotate(self,factor):
         """rotate counter clockwise (factor > 0) or clockwise (factor < 0)"""
